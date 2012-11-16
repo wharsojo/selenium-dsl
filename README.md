@@ -1,6 +1,15 @@
 selenium-dsl
 ============
-Simple-dsl for selenium
+DSL for selenium
+
+Using headless browser (Mac), you can change from "firefox" to "remote"
+
+```
+> brew install phantomjs
+> git clone https://github.com/detro/ghostdriver.git
+> phantomjs ghostdriver/src/main.js
+Ghost Driver running on port 8080
+```
 
 install:
 
@@ -23,6 +32,12 @@ li.g>a~click
 span.author>a[1]~click     
 li.public.source[1]>h3>a~click
 ```
+
+headless(change "firefox" to "remote"):
+
+````
+remote http://localhost:8080
+````
 
 run it: 
 

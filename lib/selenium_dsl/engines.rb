@@ -32,7 +32,8 @@ class SeleniumDsl
     end
 
     def _remote(prm)
-      @driver = Selenium::WebDriver.for(:remote, :url => "http://localhost:8080")
+      prm = "http://localhost:8080" if prm==''
+      @driver = Selenium::WebDriver.for(:remote, :url => prm)
     end
 
     def _mock(prm)

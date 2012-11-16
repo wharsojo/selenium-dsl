@@ -2,6 +2,7 @@ require 'selenium-webdriver'
 require 'selenium_dsl/commands'
 require 'selenium_dsl/engines'
 require 'selenium_dsl/modules'
+require 'selenium_dsl/macros'
 require 'pry'
 
 require 'term/ansicolor'
@@ -25,6 +26,7 @@ class SeleniumDsl
       # @r_cmd   = [/^(\>*([#.:]\w+|\w+)|\/\w+(\[\d+\])*)/,/[~]\w+/]
       # @r_cmd   = [/^(\>*([#.:]\w+|\w+)|\/\w+)(\[\d+\])*/,/[~]\w+/]
       @r_eng   = [/^(mock|debug|chrome|firefox|remote|visit|wait|quit|if)/]
+      @r_mcr   = [/^\$[\-\w]+ *\=/,/^\$[\-\w]+[^\=]/]
       @r_cmd   = [/^(\>*([\-\w]*(\.[.\[\]\-\d\w]+|[#:][\-\d\w]+)|[\d\w]+)|\/\w+)(\[\d+\])*/,/^[~]\w+/]
       @r_mod   = [/^(def +|end)/]
       @r_fnc   = [/^ *\w+.*/] #/^(\w+|\w+ .*)$/
@@ -50,13 +52,15 @@ class SeleniumDsl
       codes = codes.split(/\n/)
       @code[@path] = 
       {
-        :code => codes,
-        :vars => {},
-        :line => 0  
+        :macro => {},
+        :code  => codes,
+        :vars  => {},
+        :line  => 0  
       }
       
       while (line = _line_)
         stx = parse_mod(line)
+        stx = parse_mcr(line) if !stx
         stx = parse_eng(line) if !stx
         stx = parse_cmd(line) if !stx
         stx = parse_fnc(line) if !stx
@@ -65,6 +69,10 @@ class SeleniumDsl
     end
 
     private
+
+    def _code_
+      @code[@path]
+    end
 
     def _line_
       while (@path.scan('/')!=[])

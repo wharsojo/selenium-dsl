@@ -81,9 +81,10 @@ class SeleniumDsl
       end
       @code["#{@path}/#{k}"] = 
       {
-        :code => codes,
-        :line => 0,
-        :parm => v
+        :macro => {},
+        :code  => codes,
+        :line  => 0,
+        :parm  => v
       }
     end
 

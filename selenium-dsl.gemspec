@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
 
 	s.rubyforge_project = "selenium-dsl"
 
-	s.files      = %w[Gemfile Gemfile.lock Rakefile selenium-dsl.gemspec bin/sd bin/selenium-dsl lib/selenium_dsl.rb lib/selenium_dsl/commands.rb lib/selenium_dsl/engines.rb lib/selenium_dsl/modules.rb ] 
+	s.files      = %w[Gemfile Gemfile.lock Rakefile selenium-dsl.gemspec bin/sd bin/selenium-dsl lib/selenium_dsl.rb lib/selenium_dsl/commands.rb lib/selenium_dsl/engines.rb lib/selenium_dsl/modules.rb lib/selenium_dsl/macros.rb] 
 
 	s.test_files = []
 

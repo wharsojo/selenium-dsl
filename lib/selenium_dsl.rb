@@ -44,9 +44,9 @@ class SeleniumDsl
 
     def parser(codes, opt='')
       init if !@driver
-      @opt = opt.strip
-      puts "OPT: #{@opt}" if @opt!=''
+      @opt  = opt
       codes = codes.split(/\n/)
+      puts "OPT: #{@opt}" if opt
       @code[@path] = 
       {
         :macro => {},
@@ -67,11 +67,17 @@ class SeleniumDsl
 
     private
 
+    def opt_v
+      @opt=~/\-[v]/
+    end
+
     def _code_
       @code[@path]
     end
 
+    # try to the next line of code
     def _line_
+      # change path up if eol of code
       while (@path.scan('/')!=[])
         c = @code[@path]
         l = c[:line]
@@ -80,10 +86,10 @@ class SeleniumDsl
       end
       c = @code[@path]
       l = c[:line]
-      if c[:code][l]
-        while c[:code][l].to_s.strip==''
-          l= (c[:line]+=1)
-        end
+      while c[:code] && c[:code][l].to_s.strip=='' #next line should not empty
+        l= (c[:line]+=1)
+      end
+      if c[:code][l] # not eol?
         c[:line]+=1
         c = Marshal.load( Marshal.dump(c) )
         @line = c
@@ -98,9 +104,20 @@ class SeleniumDsl
       end
     end
 
-    def opt_v
-      @opt=~/\-[v]/
+    def failed
+      print 'F'.red if !opt_v
+      c = _code_
+      l = c[:line]
+      r = c[:code]
+      y = 2
+      puts "\n=====>>>>ASSERT FAILED!!!<<<<=====".yellow
+      y.times do |idx|
+        no = (l-y)+idx
+        tx = r[no].send(idx<(y-1) ? :green : :red)
+        puts "#{no+1}. #{tx}"
+      end
+      puts r[l] if r[l]
+      Kernel.exit(1)
     end
-
   end
 end

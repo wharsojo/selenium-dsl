@@ -39,7 +39,6 @@ class SeleniumDsl
       query,cmd,prm = arr
       if query!=[] && !(cmd==[] && prm=='') && !@mock
         puts "#{@path}>cmd: #{arr.inspect}" if opt_v
-        @return  = nil
         @nodes = @driver 
 
         query.each do |el|
@@ -71,7 +70,8 @@ class SeleniumDsl
           cmd << "~val" if (value=prm[/[=]+/]) && value.length==1
         end
         if (exc = in_commands?(cmd))
-          @return = send("_#{exc}",prm)
+          @return = nil
+          send("_#{exc}",prm)
         end
         true
       else
@@ -86,11 +86,11 @@ class SeleniumDsl
            @nodes.tag_name=="select")
         @nodes.clear
       end
-      @nodes.send_keys(prm[1,99])
+      @return = @nodes.send_keys(prm[1,99])
     end
 
     def _click(prm)
-      @nodes.click
+      @return = @nodes.click
       if prm[0]=='|'
         prm = prm[1,99]
         splt = prm[/(<|>|=)=|(=|!)~/]
@@ -108,7 +108,20 @@ class SeleniumDsl
     end
 
     def _text(prm)
-      @nodes.text
+      @return = @nodes.text
+      assert(prm)
+    end
+
+    protected
+
+    def assert(prm)
+      if prm[0,2]=='->'
+        if @return =~ /#{prm[2,99]}/
+          print '.'.green if !opt_v
+        else
+          failed
+        end
+      end
     end
   end
 end

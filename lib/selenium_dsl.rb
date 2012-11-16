@@ -25,7 +25,7 @@ class SeleniumDsl
       # @r_cmd   = [/^(\>*([#.:]\w+|\w+)|\/\w+(\[\d+\])*)/,/[~]\w+/]
       # @r_cmd   = [/^(\>*([#.:]\w+|\w+)|\/\w+)(\[\d+\])*/,/[~]\w+/]
       @r_eng   = [/^(mock|debug|chrome|firefox|remote|visit|wait|quit|if)/]
-      @r_cmd   = [/^(\>*(\.[.\-a-zA-z]+|[#:]\w+|\w+)|\/\w+)(\[\d+\])*/,/^[~]\w+/]
+      @r_cmd   = [/^(\>*([\-a-zA-z]*(\.[.\-a-zA-z]+|[#:]\w+)|\w+)|\/\w+)(\[\d+\])*/,/^[~]\w+/]
       @r_mod   = [/^(def +|end)/]
       @r_fnc   = [/^ *\w+.*/] #/^(\w+|\w+ .*)$/
     end
@@ -40,21 +40,13 @@ class SeleniumDsl
         end
         rtn
       end << str
-      # if arr[0][0]
-      #   if id=='cmd'
-      #     query,cmd,prm = arr
-      #     if query!=[] && !(cmd==[] && prm=='') 
-      #       puts "#{@path}>#{id}: #{arr.inspect}" if @opt=~/[-v]/
-      #     end
-      #   else
-      #     puts "#{@path}>#{id}: #{arr.inspect}" if @opt=~/[-v]/
-      #   end
-      # end
       arr
     end
 
     def parser(codes, opt='')
       init if !@driver
+      @opt = opt
+      puts "OPT: #{@opt}"
       codes = codes.split(/\n/)
       @code[@path] = 
       {
@@ -101,6 +93,10 @@ class SeleniumDsl
       else
         nil
       end
+    end
+
+    def opt_v
+      @opt=~/\-[v]/
     end
 
   end

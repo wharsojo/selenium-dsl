@@ -1,4 +1,4 @@
 require 'selenium_dsl'
 
 codes = IO.read(ARGV[0])
-SeleniumDsl.parser(codes)
+SeleniumDsl.parser(codes,ARGV[1])

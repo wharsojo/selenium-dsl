@@ -46,7 +46,7 @@ class SeleniumDsl
         end
         vars = Hash[p]
         @code[@path][:vars] = vars
-        puts ">>vars: #{vars}" if @opt=~/[-v]/ 
+        puts ">>vars: #{vars}" if opt_v
         true
       else
         false
@@ -63,7 +63,7 @@ class SeleniumDsl
         v=v.split(',').collect do |x|
           x.split(':')
         end
-        puts ">>parm: #{v}" if @opt=~/[-v]/ 
+        puts ">>parm: #{v}" if opt_v
       end
       nest  = 0
       codes = []
@@ -76,7 +76,7 @@ class SeleniumDsl
           break if nest==0
           nest -=1
         end
-        puts ">>#{line.inspect}" if @opt=~/[-v]/
+        puts ">>#{line.inspect}" if opt_v
         codes << line 
       end
       @code["#{@path}/#{k}"] = 

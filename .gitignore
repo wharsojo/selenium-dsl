@@ -2,6 +2,7 @@
 *.rbc
 .bundle
 .config
+chromedriver.log
 coverage
 InstalledFiles
 lib/bundler/man

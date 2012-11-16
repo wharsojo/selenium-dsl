@@ -17,22 +17,13 @@ class SeleniumDsl
 
     def parse_cmd(line)
       arr = match_line(@r_cmd,line.strip,'cmd')
-      # binding.pry
+
       query,cmd,prm = arr
       if query!=[] && !(cmd==[] && prm=='') && !@mock
-        puts "#{@path}>cmd: #{arr.inspect}" if @opt=~/[-v]/
+        puts "#{@path}>cmd: #{arr.inspect}" if opt_v
         @return  = nil
         @nodes = @driver.find_element(:css, 'html')
-        # comb = []
-        # query.each do |el|
-        #   lst = comb[-1]
-        #   rgx = /^\>\.|\./
-        #   if lst && (lst=~rgx && el=~rgx)
-        #     comb[-1] = "#{lst}#{el}"
-        #   else
-        #     comb << el 
-        #   end
-        # end
+
         query.each do |el|
           if el[0]==":"
             @nodes = @nodes.find_element(:name, el[1,99])

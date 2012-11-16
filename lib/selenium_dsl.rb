@@ -25,7 +25,7 @@ class SeleniumDsl
       # @r_cmd   = [/^(\>*([#.:]\w+|\w+)|\/\w+(\[\d+\])*)/,/[~]\w+/]
       # @r_cmd   = [/^(\>*([#.:]\w+|\w+)|\/\w+)(\[\d+\])*/,/[~]\w+/]
       @r_eng   = [/^(mock|debug|chrome|firefox|remote|visit|wait|quit|if)/]
-      @r_cmd   = [/^(\>*([\-a-zA-z]*(\.[.\-a-zA-z]+|[#:]\w+)|\w+)|\/\w+)(\[\d+\])*/,/^[~]\w+/]
+      @r_cmd   = [/^(\>*([\-\w]*(\.[.\[\]\-\d\w]+|[#:][\-\d\w]+)|[\d\w]+)|\/\w+)(\[\d+\])*/,/^[~]\w+/]
       @r_mod   = [/^(def +|end)/]
       @r_fnc   = [/^ *\w+.*/] #/^(\w+|\w+ .*)$/
     end
@@ -46,7 +46,7 @@ class SeleniumDsl
     def parser(codes, opt='')
       init if !@driver
       @opt = opt
-      puts "OPT: #{@opt}"
+      puts "OPT: #{@opt}" if opt!=''
       codes = codes.split(/\n/)
       @code[@path] = 
       {

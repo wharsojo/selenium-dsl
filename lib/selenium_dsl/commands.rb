@@ -15,6 +15,24 @@ class SeleniumDsl
       end
     end
 
+    def find_element(typ,el)
+      wait = Selenium::WebDriver::Wait.new(:timeout => 10) 
+      wait.until { @nodes = @nodes.find_element(typ, el) }
+      print '.'.green
+    rescue Exception => e
+      print 'F'.red
+      @driver.execute_script("return alert(arguments[0]+'')", e.message)
+    end
+
+    def find_elements(typ,el,idx)
+      wait = Selenium::WebDriver::Wait.new(:timeout => 10) 
+      wait.until { @nodes = @nodes.find_elements(typ, el)[idx-1] }
+      print '.'.green
+    rescue Exception => e
+      print 'F'.red
+      @driver.execute_script("return alert(arguments[0]+'')", e.message)
+    end
+
     def parse_cmd(line)
       arr = match_line(@r_cmd,line.strip,'cmd')
 
@@ -22,28 +40,28 @@ class SeleniumDsl
       if query!=[] && !(cmd==[] && prm=='') && !@mock
         puts "#{@path}>cmd: #{arr.inspect}" if opt_v
         @return  = nil
-        @nodes = @driver.find_element(:css, 'html')
+        @nodes = @driver #.find_element(:css, 'html')
 
         query.each do |el|
           if el[0]==":"
-            @nodes = @nodes.find_element(:name, el[1,99])
+            find_element(:name, el[1,99])
           elsif el[0]=="/"
-            @nodes = @nodes.find_element(:xpath,"/#{el}")
+            find_element(:xpath,"/#{el}")
           else
             idx = el[/\[(\d+)\]/,1].to_i
             el.sub!(/\[(\d+)\]/,'')
             if el[0]==">"
               if idx>0
                 # binding.pry
-                @nodes = @nodes.find_elements(:css, el[1,99])[idx-1]
+                find_elements(:css, el[1,99],idx)
               else
-                @nodes = @nodes.find_element(:css,  el[1,99])
+                find_element(:css,  el[1,99])
               end
             else
               if idx>0
-                @nodes = @nodes.find_elements(:css, el)[idx-1]
+                find_elements(:css, el,idx)
               else
-                @nodes = @nodes.find_element(:css,  el)
+                find_element(:css,  el)
               end
             end
           end
@@ -70,8 +88,6 @@ class SeleniumDsl
         @nodes.clear
       end
       @nodes.send_keys(prm[1,99])
-    rescue Exception => e
-      @driver.execute_script("return alert(arguments[0]+'')", e.message)
     end
 
     def _click(prm)
@@ -88,6 +104,8 @@ class SeleniumDsl
           end
         end
       end
+    rescue Exception => e
+      @driver.execute_script("return alert(arguments[0]+'')", e.message)
     end
 
     def _text(prm)

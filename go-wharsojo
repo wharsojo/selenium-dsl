@@ -2,6 +2,6 @@ chrome
 visit http://google.com
 :q=github wharsojo
 :btnG~click
-wait wharsojo
 li.g>a~click
-span.author>a[1]~click
+span.author>a[1]~click     
+li.public.source[1]>h3>a~click

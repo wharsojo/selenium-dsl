@@ -5,7 +5,7 @@ class SeleniumDsl
 
       m_set,m_run,prm = arr
       if (m_set!=[] || m_run!=[]) && !@mock
-        puts "#{@path}>mac: #{arr.inspect}" if opt_v
+        puts "#{@path}>mcr: #{arr.inspect}" if opt_v
         @return  = nil
         c = _code_
         if m_set!=[]

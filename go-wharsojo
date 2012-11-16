@@ -1,4 +1,4 @@
-chrome
+firefox
 visit http://google.com
 :q=github wharsojo
 :btnG~click

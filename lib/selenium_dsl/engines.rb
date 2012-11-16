@@ -14,6 +14,7 @@ class SeleniumDsl
       arr = match_line(@r_eng,line.strip,'eng')
       cmd,prm = arr
       if (exc = in_engines?(cmd[0]))
+        puts "#{@path}>eng: #{arr.inspect}" if opt_v
         send("_#{exc}",prm) if !@mock
         true
       else

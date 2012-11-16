@@ -25,10 +25,11 @@ class SeleniumDsl
     # the regex @r_fnc will return with value in 
     # the first array, so it need to split for prm
     def parse_fnc(line)
-      arr = match_line(@r_fnc,line.strip,'fnc')
+      arr = match_line(@r_fnc,line.strip,'mod')
       cmd,prm = arr[0][0].split(/ +/,2)
       npath = "#{@path}/#{cmd}"
       if @code.keys.index("~/#{cmd}")
+        puts "#{@path}>mod: #{arr.inspect}" if opt_v
         prm   = prm.to_s.split(',')
         @path = npath
 

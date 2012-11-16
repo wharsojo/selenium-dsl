@@ -18,18 +18,18 @@ class SeleniumDsl
     def find_element(typ,el)
       wait = Selenium::WebDriver::Wait.new(:timeout => 10) 
       wait.until { @nodes = @nodes.find_element(typ, el) }
-      print '.'.green
+      print '.'.green if !opt_v
     rescue Exception => e
-      print 'F'.red
+      print 'F'.red if !opt_v
       @driver.execute_script("return alert(arguments[0]+'')", e.message)
     end
 
     def find_elements(typ,el,idx)
       wait = Selenium::WebDriver::Wait.new(:timeout => 10) 
       wait.until { @nodes = @nodes.find_elements(typ, el)[idx-1] }
-      print '.'.green
+      print '.'.green if !opt_v
     rescue Exception => e
-      print 'F'.red
+      print 'F'.red if !opt_v
       @driver.execute_script("return alert(arguments[0]+'')", e.message)
     end
 
@@ -98,9 +98,9 @@ class SeleniumDsl
         line = prm.strip.split(splt,2)
         if line.length==2
           if (parse_cmd(line[0]) && eval("\"#{@return}\" #{splt} /#{line[1]}/"))
-            print '.'.green
+            print '.'.green if !opt_v
           else
-            print 'F'.red
+            print 'F'.red if !opt_v
           end
         end
       end

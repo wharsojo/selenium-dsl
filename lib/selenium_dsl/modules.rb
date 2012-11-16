@@ -37,7 +37,7 @@ class SeleniumDsl
         @code[@path][:line] = 0
 
         p = []
-        parm = @code[@path][:parm] #[['q','selenium']]
+        parm = @code[@path][:parm] 
         if parm && parm!=[]
           parm.each_with_index do |v,i|
             var    = v.clone
@@ -69,9 +69,6 @@ class SeleniumDsl
       nest  = 0
       codes = []
       while (line = _line_)
-        # line.strip!
-        # stx = parse_mod(line)
-        # if !stx
         nest += 1 if line.strip =~ /^if/
         if line.strip =~ /^end$/
           break if nest==0

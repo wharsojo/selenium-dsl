@@ -40,7 +40,7 @@ class SeleniumDsl
       if query!=[] && !(cmd==[] && prm=='') && !@mock
         puts "#{@path}>cmd: #{arr.inspect}" if opt_v
         @return  = nil
-        @nodes = @driver #.find_element(:css, 'html')
+        @nodes = @driver 
 
         query.each do |el|
           if el[0]==":"
@@ -82,7 +82,6 @@ class SeleniumDsl
     private
 
     def _val(prm)
-      # p "TAG: #{@nodes.tag_name}"
       if !(@nodes.attribute("type")=='file' || 
            @nodes.tag_name=="select")
         @nodes.clear
@@ -110,10 +109,6 @@ class SeleniumDsl
 
     def _text(prm)
       @nodes.text
-    end
-
-    def _html(prm)
-      # @driver.get(url)
     end
   end
 end

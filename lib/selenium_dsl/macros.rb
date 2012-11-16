@@ -19,8 +19,6 @@ class SeleniumDsl
           l = c[:line]- 1
           c[:line]    = l 
           c[:code][l] = m
-          # puts "CODE_ROW: #{m}"
-          # parse_cmd(code)
         end
         true
       else

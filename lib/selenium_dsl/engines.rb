@@ -51,7 +51,6 @@ class SeleniumDsl
     def _wait(prm)
       wait = Selenium::WebDriver::Wait.new(:timeout => 10) 
       wait.until { @driver.find_element(:css,'title').text =~ /#{prm}/ }
-      # wait.until { @driver.title =~ /#{prm}/ }
     end
 
     def _quit(prm)
@@ -63,7 +62,6 @@ class SeleniumDsl
       nest = 0
       line = prm.split(splt,2)
       if line.length==2
-        # binding.pry
         if !(parse_cmd(line[0]) && eval("\"#{@return}\" #{splt} /#{line[1]}/"))
           while (line = _line_)
             nest += 1 if line.strip =~ /^if/

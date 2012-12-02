@@ -15,6 +15,8 @@ class SeleniumDsl
     include Modules
 
     def init
+      nodes    = /^(\>*([\-\w]*(\.[.\[\]\-\d\w]+|[#:][\-\d\w]+)|[\d\w]+)|\/\w+)(\[\d+\])*/
+      action   = /^[~]\w+(\:\w+)*/
       @driver  = nil
       @nodes   = nil
       @return  = nil
@@ -22,9 +24,9 @@ class SeleniumDsl
       @code    = {}
       @path    = '~'
       @opt     = ''
-      @r_eng   = [/^(mock|debug|chrome|firefox|remote|visit|wait|quit|if)/]
+      @r_eng   = [/^(mock|debug|chrome|firefox|remote|phantomjs|visit|wait|quit|if)/]
       @r_mcr   = [/^\$[\-\w]+ *\=/,/^\$[\-\w]+[^\=]/]
-      @r_cmd   = [/^(\>*([\-\w]*(\.[.\[\]\-\d\w]+|[#:][\-\d\w]+)|[\d\w]+)|\/\w+)(\[\d+\])*/,/^[~]\w+/]
+      @r_cmd   = [nodes, action]
       @r_mod   = [/^(def +|end)/]
       @r_fnc   = [/^ *\w+.*/]
     end
@@ -86,8 +88,9 @@ class SeleniumDsl
       end
       c = @code[@path]
       l = c[:line]
-      while c[:code] && c[:code][l].to_s.strip=='' #next line should not empty
+      while c[:code][l] && c[:code][l].to_s.strip=='' #next line should not empty
         l= (c[:line]+=1)
+        p "L: #{l}"
       end
       if c[:code][l] # not eol?
         c[:line]+=1
@@ -116,7 +119,7 @@ class SeleniumDsl
         tx = r[no].send(idx<(y-1) ? :green : :red)
         puts "#{no+1}. #{tx}"
       end
-      puts r[l] if r[l]
+      puts "#{l+1}. #{r[l]}" if r[l]
       Kernel.exit(1)
     end
   end

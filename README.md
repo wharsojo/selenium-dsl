@@ -55,12 +55,24 @@ $pick_first = li.g>a~click
 $git_author = span.author>a[1]~click
 $git_repo   = li.public.source[$0]>h3>a~click
 
+chrome
 $google
 $search github wharsojo
 $submit
 $pick_first
 $git_author
 $git_repo 1
+```
+
+reference:
+
+```
+http://code.google.com/p/selenium/downloads/list
+http://code.google.com/p/selenium/wiki/RubyBindings
+http://code.google.com/p/chromedriver/downloads/list
+http://selenium.googlecode.com/svn/trunk/docs/api/rb/Selenium/WebDriver/SearchContext.html
+http://selenium.googlecode.com/svn/trunk/docs/api/rb/Selenium/WebDriver/Element.html
+http://selenium.googlecode.com/svn/trunk/docs/api/rb/Selenium/Server.html
 ```
 
 MIT License!

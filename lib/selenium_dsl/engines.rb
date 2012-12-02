@@ -31,8 +31,13 @@ class SeleniumDsl
       @driver = Selenium::WebDriver.for :firefox 
     end
 
-    def _remote(prm)
+    def _phantomjs(prm)
       prm = "http://localhost:8080" if prm==''
+      @driver = Selenium::WebDriver.for(:remote, :url => prm)
+    end
+
+    def _remote(prm)
+      prm = "http://localhost:4444/wd/hub/" if prm==''
       @driver = Selenium::WebDriver.for(:remote, :url => prm)
     end
 
@@ -45,7 +50,7 @@ class SeleniumDsl
     end
 
     def _visit(prm)
-      _init('') if !@driver
+      _firefox('') if !@driver
       @driver.get(prm)
     end
 

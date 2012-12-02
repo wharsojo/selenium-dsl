@@ -7,8 +7,8 @@ class SeleniumDsl
     end
 
     def in_commands?(cmd)
-      if cmd[0]
-        c = cmd[0][1,99]
+      if cmd
+        c = cmd[1,99]
         commands.index(c) ? c : nil
       else
         nil
@@ -20,8 +20,7 @@ class SeleniumDsl
       wait.until { @nodes = @nodes.find_element(typ, el) }
       print '.'.green if !opt_v
     rescue Exception => e
-      print 'F'.red if !opt_v
-      @driver.execute_script("return alert(arguments[0]+'')", e.message)
+      failed
     end
 
     def find_elements(typ,el,idx)
@@ -29,8 +28,7 @@ class SeleniumDsl
       wait.until { @nodes = @nodes.find_elements(typ, el)[idx-1] }
       print '.'.green if !opt_v
     rescue Exception => e
-      print 'F'.red if !opt_v
-      @driver.execute_script("return alert(arguments[0]+'')", e.message)
+      failed
     end
 
     def parse_cmd(line)
@@ -69,9 +67,10 @@ class SeleniumDsl
         if cmd==[] #no command supplied
           cmd << "~val" if (value=prm[/[=]+/]) && value.length==1
         end
-        if (exc = in_commands?(cmd))
+        c1,c2 = cmd[0].split(':',2)
+        if (exc = in_commands?(c1))
           @return = nil
-          send("_#{exc}",prm)
+          send("_#{exc}",prm,c2)
         end
         true
       else
@@ -81,7 +80,12 @@ class SeleniumDsl
 
     private
 
-    def _val(prm)
+    def _attr(prm,c2='')
+      @return = @nodes.attribute(c2)
+      assert(prm)
+    end
+
+    def _val(prm,c2='')
       if !(@nodes.attribute("type")=='file' || 
            @nodes.tag_name=="select")
         @nodes.clear
@@ -89,7 +93,7 @@ class SeleniumDsl
       @return = @nodes.send_keys(prm[1,99])
     end
 
-    def _click(prm)
+    def _click(prm,c2='')
       @return = @nodes.click
       if prm[0]=='|'
         prm = prm[1,99]
@@ -104,10 +108,10 @@ class SeleniumDsl
         end
       end
     rescue Exception => e
-      @driver.execute_script("return alert(arguments[0]+'')", e.message)
+      failed
     end
 
-    def _text(prm)
+    def _text(prm,c2='')
       @return = @nodes.text
       assert(prm)
     end

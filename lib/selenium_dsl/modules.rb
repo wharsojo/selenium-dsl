@@ -26,6 +26,7 @@ class SeleniumDsl
     # the first array, so it need to split for prm
     def parse_fnc(line)
       arr = match_line(@r_fnc,line.strip,'mod')
+      return false if arr[0]==[] #[/^ *\w+.*/] - :code=123 - [[], ":code=123"]
       cmd,prm = arr[0][0].split(/ +/,2)
       npath = "#{@path}/#{cmd}"
       if @code.keys.index("~/#{cmd}")
@@ -57,9 +58,11 @@ class SeleniumDsl
     private
 
     def _def(prm)
-      k,v = prm.split(/\(/,2)
+      # k,v = prm.split(/\(/,2)
+      # k.strip!
+      # v.sub!(/\)/,'') if v
+      k,v = prm.split(/ +/,2)
       k.strip!
-      v.sub!(/\)/,'') if v
       if v
         v=v.split(',').collect do |x|
           x.split(':')

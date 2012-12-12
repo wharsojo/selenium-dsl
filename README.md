@@ -28,9 +28,7 @@ firefox
 visit http://google.com
 :q=github wharsojo
 :btnG~click
-li.g>a~click
-span.author>a[1]~click     
-li.public.source[1]>h3>a~click
+li.g[1]>a~click
 ```
 
 headless(change "firefox" to "remote"):
@@ -46,22 +44,19 @@ sd go-wharsojo -v
 ```
 
 or
+chrome(change "firefox" to "chrome"):
 
 ```
 $google     = visit http://google.com
 $search     = :q=$0
 $submit     = :btnG~click
-$pick_first = li.g>a~click
-$git_author = span.author>a[1]~click
-$git_repo   = li.public.source[$0]>h3>a~click
+$pick_first = li.g[1]>a~click
 
 chrome
 $google
 $search github wharsojo
 $submit
 $pick_first
-$git_author
-$git_repo 1
 ```
 
 reference:

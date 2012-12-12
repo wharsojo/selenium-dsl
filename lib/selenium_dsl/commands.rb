@@ -16,40 +16,91 @@ class SeleniumDsl
     end
 
     def find_element(typ,el)
-      wait = Selenium::WebDriver::Wait.new(:timeout => 10) 
-      wait.until { @nodes = @nodes.find_element(typ, el) }
+      wait = Selenium::WebDriver::Wait.new(:timeout => 5) 
+      wait.until do
+        try=5
+        begin
+          # sleep 1
+          nodes = @nodes.find_element(typ, el) 
+        rescue Exception => e
+          if e.class == Selenium::WebDriver::Error::NoSuchWindowError ||
+             e.class == Selenium::WebDriver::Error::NoSuchElementError
+            if e.class == Selenium::WebDriver::Error::NoSuchWindowError
+              puts "switch window from #{@driver.window_handle} to #{@driver.window_handles[0]}"  if !opt_v
+              @driver.switch_to.window @driver.window_handles[0]
+              # binding.pry 
+            end
+            # binding.pry 
+            try-= 1
+            try>0 ? retry : raise(e.class,e.to_s)
+          else
+            puts "~>err: #{e.to_s}"
+            failed
+          end
+        end
+        @nodes = nodes if nodes
+        nodes
+      end
       print '.'.green if !opt_v
-    rescue Exception => e
-      failed
+    # rescue Exception => e
+    #   failed
     end
 
     def find_elements(typ,el,idx)
-      wait = Selenium::WebDriver::Wait.new(:timeout => 10) 
-      wait.until { @nodes = @nodes.find_elements(typ, el)[idx-1] }
+      wait = Selenium::WebDriver::Wait.new(:timeout => 5) 
+      wait.until do
+        try=5
+        begin
+          # sleep 1
+          nodes = @nodes.find_elements(typ, el)[idx-1]
+        rescue Exception => e
+          if e.class == Selenium::WebDriver::Error::NoSuchWindowError ||
+             e.class == Selenium::WebDriver::Error::NoSuchElementError
+            if e.class == Selenium::WebDriver::Error::NoSuchWindowError
+              puts "switch window from #{@driver.window_handle} to #{@driver.window_handles[0]}"  if !opt_v
+              @driver.switch_to.window @driver.window_handles[0]
+              # binding.pry 
+            end
+            try-= 1
+            try>0 ? retry : raise(e.class,e.to_s)
+          else
+            puts "~>err: #{e.to_s}"
+            failed
+          end
+        end
+        @nodes = nodes if nodes
+        nodes
+      end
       print '.'.green if !opt_v
-    rescue Exception => e
-      failed
+    # rescue Exception => e
+    #   failed
     end
 
     def parse_cmd(line)
       arr = match_line(@r_cmd,line.strip,'cmd')
-
       query,cmd,prm = arr
       if query!=[] && !(cmd==[] && prm=='') && !@mock
         puts "#{@path}>cmd: #{arr.inspect}" if opt_v
         @nodes = @driver 
 
         query.each do |el|
+          idx = el[/\[([\w\d=]+)\]/,1].to_i
+          el.sub!(/\[(\d+)\]/,'') if idx>0
           if el[0]==":"
-            find_element(:name, el[1,99])
+            if idx>0
+              find_elements(:name, el[1,99],idx)
+            else
+              find_element(:name, el[1,99])
+            end
           elsif el[0]=="/"
-            find_element(:xpath,"/#{el}")
+            if idx>0
+              find_elements(:xpath, "/#{el}",idx)
+            else
+              find_element(:xpath, "/#{el}")
+            end
           else
-            idx = el[/\[(\d+)\]/,1].to_i
-            el.sub!(/\[(\d+)\]/,'')
             if el[0]==">"
               if idx>0
-                # binding.pry
                 find_elements(:css, el[1,99],idx)
               else
                 find_element(:css,  el[1,99])
@@ -65,7 +116,7 @@ class SeleniumDsl
         end
 
         if cmd==[] #no command supplied
-          cmd << "~val" if (value=prm[/[=]+/]) && value.length==1
+          cmd << "~val" if (str=prm[/[=~]+/]) && str.length==1
         end
         c1,c2 = cmd[0].split(':',2)
         if (exc = in_commands?(c1))
@@ -103,11 +154,12 @@ class SeleniumDsl
           if (parse_cmd(line[0]) && eval("\"#{@return}\" #{splt} /#{line[1]}/"))
             print '.'.green if !opt_v
           else
-            print 'F'.red if !opt_v
+            failed #print 'F'.red if !opt_v
           end
         end
       end
     rescue Exception => e
+      puts "~>err: #{e.to_s}"
       failed
     end
 
@@ -119,8 +171,8 @@ class SeleniumDsl
     protected
 
     def assert(prm)
-      if prm[0,2]=='->'
-        if @return =~ /#{prm[2,99]}/
+      if prm[0,2]=='=~'
+        if @return =~ /#{prm[2,99].strip}/
           print '.'.green if !opt_v
         else
           failed

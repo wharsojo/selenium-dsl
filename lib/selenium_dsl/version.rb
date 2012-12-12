@@ -23,7 +23,7 @@ class SeleniumDsl
 
       # :nodoc:
       def patch
-      0
+      2
       end
 
       # :nodoc:

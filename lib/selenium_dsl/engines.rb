@@ -28,7 +28,9 @@ class SeleniumDsl
     end
 
     def _firefox(prm)
-      @driver = Selenium::WebDriver.for :firefox 
+      profile = Selenium::WebDriver::Firefox::Profile.new
+      profile['browser.cache.disk.enable'] = false
+      @driver = Selenium::WebDriver.for :firefox, :profile => profile 
     end
 
     def _phantomjs(prm)

@@ -15,7 +15,7 @@ class SeleniumDsl
     include Modules
 
     def init
-      nodes    = /^(\>*([\-\w]*(\.[.\[\]\-\d\w]+|[#:][\-\d\w]+)|[\d\w]+)|\/\w+)(\[\d+\])*/
+      nodes    = /^(\>*([\-\w]*(\.[.\[\]\-\d\w]+|[#:][\-\d\w]+)|\w+(\[\w+\=[\d\w"]+\])*)|\/[\w@"=\[\]]+)(\[\d+\])*/
       action   = /^[~]\w+(\:\w+)*/
       @driver  = nil
       @nodes   = nil
@@ -120,6 +120,7 @@ class SeleniumDsl
         puts "#{no+1}. #{tx}"
       end
       puts "#{l+1}. #{r[l]}" if r[l]
+      puts caller
       Kernel.exit(1)
     end
   end

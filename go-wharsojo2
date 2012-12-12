@@ -5,7 +5,7 @@ $pick_first = li.g>a~click
 $git_author = span.author>a[1]~click
 $git_repo   = li.public.source[$0]>h3>a~click
 
-chrome
+firefox
 $google
 $search github wharsojo
 $submit

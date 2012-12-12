@@ -59,6 +59,22 @@ $submit
 $pick_first
 ```
 
+parser is oneliner so it check patern in line
+
+```
+firefox
+visit http://demostore.inov.asia/
+:add[1]~click
+input[type="submit"]~click
+a.general-button.confirm~text=~Confirm Payment
+
+~>eng: [["firefox"], ""]
+~>eng: [["visit"], "http://demostore.inov.asia/"]
+~>cmd: [[":add[1]"], ["~click"], ""]
+~>cmd: [["input[type=\"submit\"]"], ["~click"], ""]
+~>cmd: [["a.general-button.confirm"], ["~text"], "=~Confirm Payment"]
+```
+
 reference:
 
 ```

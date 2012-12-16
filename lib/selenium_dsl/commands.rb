@@ -41,9 +41,9 @@ class SeleniumDsl
         @nodes = nodes if nodes
         nodes
       end
-      print '.'.green if !opt_v
-    # rescue Exception => e
-    #   failed
+      print (opt_m ? '.' : '.'.green) if !opt_v
+    rescue Exception => e
+      failed
     end
 
     def find_elements(typ,el,idx)
@@ -71,9 +71,9 @@ class SeleniumDsl
         @nodes = nodes if nodes
         nodes
       end
-      print '.'.green if !opt_v
-    # rescue Exception => e
-    #   failed
+      print (opt_m ? '.' : '.'.green) if !opt_v
+    rescue Exception => e
+      failed
     end
 
     def parse_cmd(line)
@@ -118,10 +118,15 @@ class SeleniumDsl
         if cmd==[] #no command supplied
           cmd << "~val" if (str=prm[/[=~]+/]) && str.length==1
         end
-        c1,c2 = cmd[0].split(':',2)
-        if (exc = in_commands?(c1))
-          @return = nil
-          send("_#{exc}",prm,c2)
+        if cmd[0][0]=="@"
+          @return = @nodes.attribute(cmd[0][1,99])
+          assert(prm)
+        else
+          c1,c2 = cmd[0].split(':',2)
+          if (exc = in_commands?(c1))
+            @return = nil
+            send("_#{exc}",prm,c2)
+          end
         end
         true
       else
@@ -152,9 +157,9 @@ class SeleniumDsl
         line = prm.strip.split(splt,2)
         if line.length==2
           if (parse_cmd(line[0]) && eval("\"#{@return}\" #{splt} /#{line[1]}/"))
-            print '.'.green if !opt_v
+            print (opt_m ? '.' : '.'.green) if !opt_v
           else
-            failed #print 'F'.red if !opt_v
+            failed #print (opt_m ? 'F' : 'F'.red) if !opt_v
           end
         end
       end
@@ -173,7 +178,7 @@ class SeleniumDsl
     def assert(prm)
       if prm[0,2]=='=~'
         if @return =~ /#{prm[2,99].strip}/
-          print '.'.green if !opt_v
+          print (opt_m ? '.' : '.'.green) if !opt_v
         else
           failed
         end

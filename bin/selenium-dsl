@@ -1,4 +1,49 @@
 require 'selenium_dsl'
 
-codes = IO.read(ARGV[0])
-SeleniumDsl.parser(codes,ARGV[1])
+if ARGV.length>0
+  codes = IO.read(ARGV[0])
+  SeleniumDsl.parser(codes,ARGV[1])
+else
+  puts <<END
+Selenium DSL 
+============
+> selenium-dsl <script-file>  [-mqv] #OR
+> sd <script-file>  [-mqv] 
+--------------------------
+m: mono    --> no color
+q: quit    --> closing browser
+v: verbose --> parsing output 
+
+Script-Reference:
+-----------------
+eng: <string> [params]    --> Commands
+ ex: firefox
+     visit http://google.com
+     *browser: (firefox | chrome | remote | phantomjs)*
+cmd: <css-cmd>            --> DOM Query (DQ)
+ ex: li.g[1]>a
+cmd: <css-cmd>[=<value>]  --> DQ and attr value=Id0123
+ ex: :input_id=Id0123       # <input name="input_id"/>
+cmd: <css-cmd>[~<action>] --> DQ and action (DQA)
+ ex: li.g[1]>a~click
+cmd: <css-cmd>[~<action>][=~<text>] --> DQA and check node text
+ ex: li.g[1]>a~text=~Home
+cmd: <css-cmd>[@<attr>][=~<text>] --> DQ and check node attr
+ ex: :input_id@value=~ayam
+
+Script-BASH-for-cron-job
+------------------------
+#!/bin/bash
+txt=`sd my-website -mq`
+if [ $? -ne 0 ]
+  then
+    echo "Error!!!"
+    echo -e "\\r\\n $txt"   > elog.txt
+    cat emsg.txt elog.txt > email.txt
+    ssmtp site.monitor@gmail.com < email.txt
+  else echo "OK"
+fi
+
+https://github.com/wharsojo/selenium-dsl - Enjoy!!! 
+END
+end

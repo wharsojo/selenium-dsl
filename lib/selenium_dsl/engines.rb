@@ -47,9 +47,9 @@ class SeleniumDsl
       @mock = true
     end
 
-    def _debug(prm)
-      binding.pry
-    end
+    # def _debug(prm)
+    #   binding.pry
+    # end
 
     def _visit(prm)
       _firefox('') if !@driver

@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 	s.require_paths = ["lib"] 
     s.executables   = ["sd","selenium-dsl"]
 	s.add_runtime_dependency "selenium-webdriver"
-	s.add_runtime_dependency "pry"
 	s.add_runtime_dependency "term-ansicolor"
-	s.post_install_message = ">>Enjoy your SDSL!!!<<"
+	# s.add_runtime_dependency "pry"
+	s.post_install_message = "\ncmd: sd [Enter]\n>>Enjoy your Selenium DSL!!!<<"
 end

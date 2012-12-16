@@ -3,7 +3,7 @@ require 'selenium_dsl/commands'
 require 'selenium_dsl/engines'
 require 'selenium_dsl/modules'
 require 'selenium_dsl/macros'
-require 'pry'
+# require 'pry'
 
 require 'term/ansicolor'
 include Term::ANSIColor
@@ -16,7 +16,7 @@ class SeleniumDsl
 
     def init
       nodes    = /^(\>*([\-\w]*(\.[.\[\]\-\d\w]+|[#:][\-\d\w]+)|\w+(\[\w+\=[\d\w"]+\])*)|\/[\w@"=\[\]]+)(\[\d+\])*/
-      action   = /^[~]\w+(\:\w+)*/
+      action   = /^[~@]\w+(\:\w+)*/
       @driver  = nil
       @nodes   = nil
       @return  = nil
@@ -24,7 +24,7 @@ class SeleniumDsl
       @code    = {}
       @path    = '~'
       @opt     = ''
-      @r_eng   = [/^(mock|debug|chrome|firefox|remote|phantomjs|visit|wait|quit|if)/]
+      @r_eng   = [/^(chrome|firefox|remote|phantomjs|visit|wait|quit|if)/] #mock|debug|
       @r_mcr   = [/^\$[\-\w]+ *\=/,/^\$[\-\w]+[^\=]/]
       @r_cmd   = [nodes, action]
       @r_mod   = [/^(def +|end)/]
@@ -64,13 +64,22 @@ class SeleniumDsl
         stx = parse_cmd(line) if !stx
         stx = parse_fnc(line) if !stx
       end
+      @driver.quit if opt_q && @driver
       print "\n"
     end
 
     private
 
+    def opt_m
+      @opt=~/\-.*[m]/
+    end
+
+    def opt_q
+      @opt=~/\-.*[q]/
+    end
+
     def opt_v
-      @opt=~/\-[v]/
+      @opt=~/\-.*[v]/
     end
 
     def _code_
@@ -108,19 +117,22 @@ class SeleniumDsl
     end
 
     def failed
-      print 'F'.red if !opt_v
+      print (opt_m ? 'F' : 'F'.red) if !opt_v
       c = _code_
       l = c[:line]
       r = c[:code]
       y = 2
-      puts "\n=====>>>>ASSERT FAILED!!!<<<<=====".yellow
+      e = "\n=====>>>>ASSERT FAILED!!!<<<<====="
+      puts (opt_m ? e : e.yellow)
       y.times do |idx|
         no = (l-y)+idx
-        tx = r[no].send(idx<(y-1) ? :green : :red)
+        tx = "#{r[no]}#{idx<(y-1) ? '' : ' ...Error'}"
+        tx = (idx<(y-1) ? tx.green : tx.red) if !opt_m
         puts "#{no+1}. #{tx}"
       end
       puts "#{l+1}. #{r[l]}" if r[l]
-      puts caller
+      # puts caller
+      @driver.quit if opt_q && @driver
       Kernel.exit(1)
     end
   end

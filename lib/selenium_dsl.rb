@@ -3,7 +3,7 @@ require 'selenium_dsl/commands'
 require 'selenium_dsl/engines'
 require 'selenium_dsl/modules'
 require 'selenium_dsl/macros'
-# require 'pry'
+require 'pry' if ARGV[0]=~/\-.*[d]/
 
 require 'term/ansicolor'
 include Term::ANSIColor
@@ -24,7 +24,7 @@ class SeleniumDsl
       @code    = {}
       @path    = '~'
       @opt     = ''
-      @r_eng   = [/^(chrome|firefox|remote|phantomjs|visit|wait|quit|if)/] #mock|debug|
+      @r_eng   = [/^(debug|chrome|firefox|remote|phantomjs|visit|wait|quit|if|screenshot)/] #mock|debug|
       @r_mcr   = [/^\$[\-\w]+ *\=/,/^\$[\-\w]+[^\=]/]
       @r_cmd   = [nodes, action]
       @r_mod   = [/^(def +|end)/]
@@ -70,12 +70,20 @@ class SeleniumDsl
 
     private
 
+    def opt_d
+      @opt=~/\-.*[d]/
+    end
+
     def opt_m
       @opt=~/\-.*[m]/
     end
 
     def opt_q
       @opt=~/\-.*[q]/
+    end
+
+    def opt_s
+      @opt=~/\-.*[s]/
     end
 
     def opt_v
@@ -133,6 +141,7 @@ class SeleniumDsl
       puts "#{l+1}. #{r[l]}" if r[l]
       # puts caller
       @driver.quit if opt_q && @driver
+      @driver.save_screenshot("#{ARGV[0]}-error_#{l}.png") if opt_s
       Kernel.exit(1)
     end
   end

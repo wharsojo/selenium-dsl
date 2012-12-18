@@ -1,4 +1,5 @@
 firefox
 visit http://google.com
 :q=github wharsojo
+screenshot dodol.png
 :q@value=~github wharsojoT

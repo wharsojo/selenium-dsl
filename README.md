@@ -2,7 +2,7 @@ selenium-dsl
 ============
 DSL for selenium
 
-Using headless browser (Mac), you can change from "firefox" to "remote"
+Using headless browser (Mac), you can change from "firefox" to "phantomjs"
 
 ```
 > brew install phantomjs
@@ -59,20 +59,51 @@ $submit
 $pick_first
 ```
 
-parser is oneliner so it check patern in line
+commandline
 
 ```
-firefox
-visit http://demostore.inov.asia/
-:add[1]~click
-input[type="submit"]~click
-a.general-button.confirm~text=~Confirm Payment
+Selenium DSL 
+============
+> selenium-dsl <script-file>  [-dmqv] #OR
+> sd <script-file>  [-mqv] 
+--------------------------
+d: debug   --> debugin with pry
+m: mono    --> no color
+q: quit    --> closing browser
+s: screenshot> if error screenshot!
+v: verbose --> parsing output 
 
-~>eng: [["firefox"], ""]
-~>eng: [["visit"], "http://demostore.inov.asia/"]
-~>cmd: [[":add[1]"], ["~click"], ""]
-~>cmd: [["input[type=\"submit\"]"], ["~click"], ""]
-~>cmd: [["a.general-button.confirm"], ["~text"], "=~Confirm Payment"]
+Script-Reference:
+-----------------
+eng: <string> [params]    --> Commands
+ ex: firefox
+     visit http://google.com
+     *browser: (firefox | chrome | remote | phantomjs)*
+cmd: <css-cmd>            --> DOM Query (DQ)
+ ex: li.g[1]>a
+cmd: <css-cmd>[=<value>]  --> DQ and attr value=Id0123
+ ex: :input_id=Id0123       # <input name="input_id"/>
+cmd: <css-cmd>[~<action>] --> DQ and action (DQA)
+ ex: li.g[1]>a~click
+cmd: <css-cmd>[~<action>][=~<text>] --> DQA and check node text
+ ex: li.g[1]>a~text=~Home
+cmd: <css-cmd>[@<attr>][=~<text>] --> DQ and check node attr
+ ex: :input_id@value=~ayam
+
+Script-BASH-for-cron-job
+------------------------
+#!/bin/bash
+txt=`sd my-website -mq`
+if [ $? -ne 0 ]
+  then
+    echo "Error!!!"
+    echo -e "\r\n $txt"   > elog.txt
+    cat emsg.txt elog.txt > email.txt
+    ssmtp site.monitor@gmail.com < email.txt
+  else echo "OK"
+fi
+
+https://github.com/wharsojo/selenium-dsl - Enjoy!!! 
 ```
 
 reference:

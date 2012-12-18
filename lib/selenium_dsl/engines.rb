@@ -43,13 +43,19 @@ class SeleniumDsl
       @driver = Selenium::WebDriver.for(:remote, :url => prm)
     end
 
+    def _screenshot(prm)
+      @driver.save_screenshot(prm)
+    end
+
     def _mock(prm)
       @mock = true
     end
 
-    # def _debug(prm)
-    #   binding.pry
-    # end
+if ARGV[1]=~/\-.*[d]/
+    def _debug(prm)
+      binding.pry
+    end
+end
 
     def _visit(prm)
       _firefox('') if !@driver

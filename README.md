@@ -67,10 +67,9 @@ Selenium DSL
 > selenium-dsl <script-file>  [-dmqv] #OR
 > sd <script-file>  [-mqv] 
 --------------------------
-d: debug   --> debugin with pry
 m: mono    --> no color
 q: quit    --> closing browser
-s: screenshot> if error screenshot!
+s: screenshot> error, screenshot!
 v: verbose --> parsing output 
 
 Script-Reference:
@@ -93,7 +92,7 @@ cmd: <css-cmd>[@<attr>][=~<text>] --> DQ and check node attr
 Script-BASH-for-cron-job
 ------------------------
 #!/bin/bash
-txt=`sd my-website -mq`
+txt=`sd my-website -mqs`
 if [ $? -ne 0 ]
   then
     echo "Error!!!"

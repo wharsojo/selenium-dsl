@@ -2,4 +2,5 @@ firefox
 visit http://google.com
 :q=github wharsojo
 screenshot dodol.png
+debug
 :q@value=~github wharsojoT

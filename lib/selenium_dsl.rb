@@ -3,7 +3,7 @@ require 'selenium_dsl/commands'
 require 'selenium_dsl/engines'
 require 'selenium_dsl/modules'
 require 'selenium_dsl/macros'
-require 'pry' if ARGV[0]=~/\-.*[d]/
+require 'pry' if ARGV[1]=~/\-.*[d]/
 
 require 'term/ansicolor'
 include Term::ANSIColor
@@ -23,8 +23,8 @@ class SeleniumDsl
       @mock    = false 
       @code    = {}
       @path    = '~'
-      @opt     = ''
-      @r_eng   = [/^(debug|chrome|firefox|remote|phantomjs|visit|wait|quit|if|screenshot)/] #mock|debug|
+      @opt     = []
+      @r_eng   = [/^(debug|chrome|firefox|phantomjs|remote|resize|visit|wait|quit|if|screenshot)/] #mock|debug|
       @r_mcr   = [/^\$[\-\w]+ *\=/,/^\$[\-\w]+[^\=]/]
       @r_cmd   = [nodes, action]
       @r_mod   = [/^(def +|end)/]
@@ -71,23 +71,27 @@ class SeleniumDsl
     private
 
     def opt_d
-      @opt=~/\-.*[d]/
+      (opt=@opt.select{|x|x=~/\-\w*[d]/})==[] ? nil : opt[0]
     end
 
     def opt_m
-      @opt=~/\-.*[m]/
+      (opt=@opt.select{|x|x=~/\-\w*[m]/})==[] ? nil : opt[0]
     end
 
     def opt_q
-      @opt=~/\-.*[q]/
+      (opt=@opt.select{|x|x=~/\-\w*[q]/})==[] ? nil : opt[0]
+    end
+
+    def opt_r
+      (opt=@opt.select{|x|x=~/\-\w*[r]/})==[] ? nil : opt[0]
     end
 
     def opt_s
-      @opt=~/\-.*[s]/
+      (opt=@opt.select{|x|x=~/\-\w*[s]/})==[] ? nil : opt[0]
     end
 
     def opt_v
-      @opt=~/\-.*[v]/
+      (opt=@opt.select{|x|x=~/\-\w*[v]/})==[] ? nil : opt[0]
     end
 
     def _code_
@@ -139,9 +143,15 @@ class SeleniumDsl
         puts "#{no+1}. #{tx}"
       end
       puts "#{l+1}. #{r[l]}" if r[l]
-      # puts caller
+      if (opt=opt_s)
+        if (arr=opt.split(':',2)).length>1
+          @driver.save_screenshot("#{arr[1]}.png") 
+        else
+          @driver.save_screenshot("#{ARGV[0]}-error_#{l}.png")
+        end
+      end
       @driver.quit if opt_q && @driver
-      @driver.save_screenshot("#{ARGV[0]}-error_#{l}.png") if opt_s
+      # puts caller
       Kernel.exit(1)
     end
   end

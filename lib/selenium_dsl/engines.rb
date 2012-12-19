@@ -24,13 +24,22 @@ class SeleniumDsl
 
     private
     def _chrome(prm)
-      @driver = Selenium::WebDriver.for :chrome
+      profile = Selenium::WebDriver::Chrome::Profile.new
+      @driver = Selenium::WebDriver.for :chrome, :profile => profile 
+      if (opr=opt_r) && opr=~/[:]/
+        res = opr.sub(/.*[:]/,'').split('x',2).collect{|x|x.to_i}
+        @driver.manage.window.size=Selenium::WebDriver::Dimension.new(*res)
+      end
     end
 
     def _firefox(prm)
       profile = Selenium::WebDriver::Firefox::Profile.new
-      profile['browser.cache.disk.enable'] = false
+      profile['browser.cache.disk.enable']       = false
       @driver = Selenium::WebDriver.for :firefox, :profile => profile 
+      if (opr=opt_r) && opr=~/[:]/
+        res = opr.sub(/.*[:]/,'').split('x',2).collect{|x|x.to_i}
+        @driver.manage.window.size=Selenium::WebDriver::Dimension.new(*res)
+      end
     end
 
     def _phantomjs(prm)
@@ -41,6 +50,11 @@ class SeleniumDsl
     def _remote(prm)
       prm = "http://localhost:4444/wd/hub/" if prm==''
       @driver = Selenium::WebDriver.for(:remote, :url => prm)
+    end
+
+    def _resize(prm)
+      res = prm.split('x',2).collect{|x|x.to_i}
+      @driver.manage.window.size=Selenium::WebDriver::Dimension.new(*res)
     end
 
     def _screenshot(prm)

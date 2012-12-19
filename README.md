@@ -64,13 +64,23 @@ commandline
 ```
 Selenium DSL 
 ============
-> selenium-dsl <script-file>  [-dmqv] #OR
-> sd <script-file>  [-mqv] 
+> selenium-dsl <script-file>  [-mqrsv] #OR
+> sd <script-file>  [-mqrsv] 
 --------------------------
 m: mono    --> no color
-q: quit    --> closing browser
+q: quit    --> close browser
+r: resize  --> resize browser
 s: screenshot> error, screenshot!
 v: verbose --> parsing output 
+
+Ex:
+> sd go-test -m -q -v -r:800x600 -s:error_image   
+> sd go-test -mqv -r:800x600 -s:error_image   
+> sd go-test -mqvr:800x600 -s:error_image   
+> sd go-test -mqvsr:800x600
+> sd go-test -qr:800x600
+> sd go-test -q
+> sd go-test
 
 Script-Reference:
 -----------------

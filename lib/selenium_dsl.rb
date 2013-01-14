@@ -24,7 +24,7 @@ class SeleniumDsl
       @code    = {}
       @path    = '~'
       @opt     = []
-      @r_eng   = [/^(debug|chrome|firefox|phantomjs|remote|resize|visit|wait|quit|if|screenshot)/] #mock|debug|
+      @r_eng   = [/^(debug|chrome|firefox|phantomjs|remote|resize|visit|wait|quit|if|screenshot|sleep)/] #mock|debug|
       @r_mcr   = [/^\$[\-\w]+ *\=/,/^\$[\-\w]+[^\=]/]
       @r_cmd   = [nodes, action]
       @r_mod   = [/^(def +|end)/]
@@ -90,6 +90,10 @@ class SeleniumDsl
       (opt=@opt.select{|x|x=~/\-\w*[s]/})==[] ? nil : opt[0]
     end
 
+    def opt_t
+      (opt=@opt.select{|x|x=~/\-\w*[t]/})==[] ? nil : opt[0]
+    end
+
     def opt_v
       (opt=@opt.select{|x|x=~/\-\w*[v]/})==[] ? nil : opt[0]
     end
@@ -151,7 +155,7 @@ class SeleniumDsl
         end
       end
       @driver.quit if opt_q && @driver
-      # puts caller
+      puts caller if opt_t
       Kernel.exit(1)
     end
   end

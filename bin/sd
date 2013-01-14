@@ -7,13 +7,14 @@ else
   puts <<END
 Selenium DSL 
 ============
-> selenium-dsl <script-file>  [-mqrsv] #OR
-> sd <script-file>  [-mqrsv] 
---------------------------
+> selenium-dsl <script-file>  [-mqrstv] #OR
+> sd <script-file>  [-mqrstv] 
+-----------------------------
 m: mono    --> no color
 q: quit    --> close browser
 r: resize  --> resize browser
 s: screenshot> error, screenshot!
+t: trace   --> trace call stack
 v: verbose --> parsing output 
 
 Ex:

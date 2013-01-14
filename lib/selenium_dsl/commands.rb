@@ -20,17 +20,13 @@ class SeleniumDsl
       wait.until do
         try=5
         begin
-          # sleep 1
           nodes = @nodes.find_element(typ, el) 
         rescue Exception => e
           if e.class == Selenium::WebDriver::Error::NoSuchWindowError ||
              e.class == Selenium::WebDriver::Error::NoSuchElementError
-            if e.class == Selenium::WebDriver::Error::NoSuchWindowError
-              puts "switch window from #{@driver.window_handle} to #{@driver.window_handles[0]}"  if !opt_v
-              @driver.switch_to.window @driver.window_handles[0]
-              # binding.pry 
-            end
-            # binding.pry 
+            puts "switch: #{@driver.window_handle} to #{@driver.window_handles.inspect}" if opt_v
+            @driver.switch_to.window @driver.window_handles[0]
+            sleep 1
             try-= 1
             try>0 ? retry : raise(e.class,e.to_s)
           else
@@ -51,16 +47,14 @@ class SeleniumDsl
       wait.until do
         try=5
         begin
-          # sleep 1
+          # binding.pry
           nodes = @nodes.find_elements(typ, el)[idx-1]
         rescue Exception => e
           if e.class == Selenium::WebDriver::Error::NoSuchWindowError ||
              e.class == Selenium::WebDriver::Error::NoSuchElementError
-            if e.class == Selenium::WebDriver::Error::NoSuchWindowError
-              puts "switch window from #{@driver.window_handle} to #{@driver.window_handles[0]}"  if !opt_v
-              @driver.switch_to.window @driver.window_handles[0]
-              # binding.pry 
-            end
+            puts "switch: #{@driver.window_handle} to #{@driver.window_handles.inspect}" if opt_v
+            @driver.switch_to.window @driver.window_handles[0]
+            sleep 1
             try-= 1
             try>0 ? retry : raise(e.class,e.to_s)
           else
@@ -69,19 +63,24 @@ class SeleniumDsl
           end
         end
         @nodes = nodes if nodes
+        # puts "func : #{el} #{idx}" if opt_v
+        # puts "TAG : #{@nodes.tag_name}" if opt_v
+        # puts "TEXT: #{@nodes.text}" if opt_v
         nodes
       end
       print (opt_m ? '.' : '.'.green) if !opt_v
     rescue Exception => e
+        # puts "TAG : #{@nodes.tag_name}" if opt_v
+        # puts @nodes.text if opt_v
       failed
     end
 
     def parse_cmd(line)
       arr = match_line(@r_cmd,line.strip,'cmd')
       query,cmd,prm = arr
+      @nodes = @driver 
       if query!=[] && !(cmd==[] && prm=='') && !@mock
         puts "#{@path}>cmd: #{arr.inspect}" if opt_v
-        @nodes = @driver 
 
         query.each do |el|
           idx = el[/\[([\w\d=]+)\]/,1].to_i
@@ -180,6 +179,7 @@ class SeleniumDsl
         if @return =~ /#{prm[2,99].strip}/
           print (opt_m ? '.' : '.'.green) if !opt_v
         else
+          puts "#{@return} =~ /#{prm[2,99].strip}/" if opt_t
           failed
         end
       end

@@ -65,6 +65,10 @@ class SeleniumDsl
       @mock = true
     end
 
+    def _sleep(prm)
+      sleep prm.to_i
+    end
+
 if ARGV[1]=~/\-.*[d]/
     def _debug(prm)
       binding.pry
